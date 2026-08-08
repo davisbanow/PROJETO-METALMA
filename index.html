@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ESTOCA AÍ - WEB</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+        <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    </head>
+    <body>
+        <div id="login-screen" class="container">
+            <img src="metalma.png" alt="Logo Metalma" class="logo-metalma">
+            <h2>Bem Vindo!</h2>
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="password" id="password" placeholder="Senha">
+            <button id="btn-login">Entrar</button>
+            <p id="login-msg" class="error-msg"></p>
+         </div>
+
+         <div id="app-screen" class="container hidden">
+            <img src="metalma.png" alt="Logo Metalma" class="logo-metalma">
+            
+            <header>
+                <h2>Sistema de Inventário</h2>
+                <button id="btn-logout">Sair</button>
+            </header>
+
+            <section class="config-section">
+                <label for="mes">Mês:</label>
+                <select id="mes">
+                    <option value="Janeiro">Janeiro</option>
+                    <option value="Fevereiro">Fevereiro</option>
+                    <option value="Março">Março</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Maio">Maio</option>
+                    <option value="Junho">Junho</option>
+                    <option value="Julho">Julho</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Setembro">Setembro</option>
+                    <option value="Outubro">Outubro</option>
+                    <option value="Novembro">Novembro</option>
+                    <option value="Dezembro">Dezembro</option>
+                </select>
+
+                <label for="ano">Ano:</label>
+                <select id="ano">
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+
+                <label for="area">Área:</label>
+                <select id="area">
+                    <option value="Bags Fabrica">Bags Fábrica</option>
+                    <option value="Concentrado">Concentrado</option>
+                    <option value="Materia Prima">Matéria Prima</option>
+                    <option value="Aparas">Aparas</option>
+                    <option value="Terceiro">Terceiro</option>
+                    <option value="Galpão">Galpão</option>
+                    <option value="Expedição">Expedição</option>
+                </select>
+            </section>
+
+            <section class="scanner-section">
+                <div id="reader"></div>
+                <button id="btn-start-scan">Ligar Câmera</button>
+                
+                <div class="obs-container">
+                    <input type="text" id="observacao" class="obs-input" placeholder="Observação (Opcional)">
+                    <button id="btn-salvar-obs" class="btn-obs">OK</button>
+                </div>
+
+                <p id="scan-result" class="success-msg"></p>
+            </section>
+
+            <section class="data-section">
+                <h3 id="titulo-tabela">Registros Atuais</h3>
+                <table id="tabela-registros">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Peso</th>
+                            <th>Observação</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo"></tbody>
+                </table>
+                <button id="btn-export">Exportar para Excel</button>
+            </section>
+         </div>
+         
+         <script type="module" src="app.js"></script>
+    </body>
+</html>

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA605ZGWKUyLfwe9-OohNRwnCqSV23q_cM",
@@ -34,6 +34,7 @@ const selectAno = document.getElementById('ano');
 
 let inventarioParaExcel = [];
 let observacaoTemporaria = "";
+let ultimoIdSalvo = null;
 
 btnLogin.addEventListener('click', async () => {
     const email = document.getElementById('email').value;
@@ -58,18 +59,38 @@ btnLogout.addEventListener('click', async () => {
     appScreen.classList.add('hidden');
 });
 
+
 selectArea.addEventListener('change', carregarDadosDoBanco);
 selectMes.addEventListener('change', carregarDadosDoBanco);
 selectAno.addEventListener('change', carregarDadosDoBanco);
 
-btnSalvarObs.addEventListener('click', () => {
+
+btnSalvarObs.addEventListener('click', async () => {
     if (inputObservacao) {
-        observacaoTemporaria = inputObservacao.value.trim();
-        if (observacaoTemporaria !== "") {
-            scanResult.innerText = `Observação fixada: "${observacaoTemporaria}"`;
+        const textoObs = inputObservacao.value.trim();
+        
+        if (textoObs !== "") {
+            if (ultimoIdSalvo) {
+                try {
+                    const docRef = doc(db, "inventario", ultimoIdSalvo);
+                    await updateDoc(docRef, { observacao: String(textoObs) });
+                    scanResult.innerText = `Observação adicionada ao último item: "${textoObs}"`;
+                    scanResult.style.color = "blue";
+                    
+                    inputObservacao.value = "";
+                    ultimoIdSalvo = null;
+                    setTimeout(() => carregarDadosDoBanco(), 300);
+                    return;
+                } catch (e) {
+                    console.error("Erro ao atualizar o último item:", e);
+                }
+            }
+
+            observacaoTemporaria = textoObs;
+            scanResult.innerText = `Observação fixada para o próximo item: "${observacaoTemporaria}"`;
             scanResult.style.color = "blue";
         } else {
-            scanResult.innerText = `Nenhuma observação inserida para fixar.`;
+            scanResult.innerText = `Nenhuma observação inserida.`;
             scanResult.style.color = "gray";
         }
     }
@@ -99,7 +120,6 @@ async function onScanSuccess(decodedText, decodedResult) {
         const mesSelecionado = selectMes.value;
         const anoSelecionado = selectAno.value;
         
-       
         const inputAtual = document.getElementById('observacao');
         const textoCaixa = inputAtual ? inputAtual.value.trim() : "";
         const obsFinal = textoCaixa !== "" ? textoCaixa : (observacaoTemporaria || "");
@@ -108,8 +128,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         scanResult.style.color = "green";
 
         try {
-         
-            await addDoc(collection(db, "inventario"), {
+            const docRef = await addDoc(collection(db, "inventario"), {
                 codigo: String(codigo),
                 peso: String(peso),
                 observacao: String(obsFinal),
@@ -119,11 +138,11 @@ async function onScanSuccess(decodedText, decodedResult) {
                 dataRegistro: new Date()
             });
             
-          
+            ultimoIdSalvo = docRef.id;
+
             if (inputAtual) inputAtual.value = "";
             observacaoTemporaria = "";
 
-          
             setTimeout(() => {
                 carregarDadosDoBanco();
             }, 300);
@@ -160,7 +179,7 @@ function adicionarNaTabela(idDoc, codigo, peso, observacao) {
     `;
     
     novaLinha.querySelector('.btn-delete').addEventListener('click', async () => {
-        if (confirm("Tem certeza que deseja apagar este registro?")) {
+        if (confirm("Tem certeza que deseja apagar este registo?")) {
             try {
                 await deleteDoc(doc(db, "inventario", idDoc));
                 carregarDadosDoBanco();

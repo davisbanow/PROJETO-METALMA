@@ -75,18 +75,27 @@
 
             <section class="data-section">
                 <h3 id="titulo-tabela">Registros Atuais</h3>
-                <table id="tabela-registros">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Peso</th>
-                            <th>Observação</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo"></tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table id="tabela-registros">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Fornecedor</th>
+                                <th>Lote</th>
+                                <th>Nota Fiscal</th>
+                                <th>Qtd</th>
+                                <th>SIE n°</th>
+                                <th>Data</th>
+                                <th>Observação</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo"></tbody>
+                    </table>
+                </div>
                 <button id="btn-export">Exportar para Excel</button>
+                <button id="btn-export-mes" class="btn-secundario">Exportar Mês Inteiro (Todas as Áreas)</button>
             </section>
          </div>
          
